@@ -3,7 +3,13 @@ from django.db import models
 
 class Scope(models.Model):
 
-    scope_name = models.CharField(null=True, max_length=50, verbose_name='Название категории')
+    name = models.CharField(null=True, max_length=50, verbose_name='Название категории')
+
+
+    class Meta:
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
 
 
 class Article(models.Model):
@@ -12,8 +18,7 @@ class Article(models.Model):
     text = models.TextField(verbose_name='Текст')
     published_at = models.DateTimeField(verbose_name='Дата публикации')
     image = models.ImageField(null=True, blank=True, verbose_name='Изображение',)
-    scopes = models.ManyToManyField(Scope, through='ScopePositions')
-
+    all_scopes = models.ManyToManyField(Scope,  related_name='all_tags', through='ScopePositions')
 
     class Meta:
         verbose_name = 'Статья'
@@ -26,6 +31,9 @@ class Article(models.Model):
 
 class ScopePositions(models.Model):
 
-    scope = models.ForeignKey(Scope, on_delete=models.CASCADE)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    general = models.BooleanField(verbose_name='Основной?')
+    scope = models.ForeignKey(Scope, on_delete=models.CASCADE, related_name='scopes')
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='scopes')
+    general = models.BooleanField(verbose_name='Основной')
+
+    class Meta:
+        ordering = ['-general']
