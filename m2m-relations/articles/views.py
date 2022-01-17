@@ -1,7 +1,6 @@
 from django.shortcuts import render
 
-from articles.models import Article, ScopePositions, Scope
-
+from articles.models import Article, Relationship, Scope
 
 def articles_list(request):
     template = 'articles/news.html'
